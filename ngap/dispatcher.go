@@ -22,7 +22,7 @@ import (
 	"github.com/omec-project/ngap"
 	"github.com/omec-project/ngap/ngapType"
 )
-
+//function Dispatcher
 func DispatchLb(sctplbMsg *sdcoreAmfServer.SctplbMessage, Amf2RanMsgChan chan *sdcoreAmfServer.AmfMessage) {
 	fmt.Printf("DispatchLb GnbId:%v GnbIp: %v %T", sctplbMsg.GnbId, sctplbMsg.GnbIpAddr, Amf2RanMsgChan)
 	var ran *context.AmfRan
