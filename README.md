@@ -43,7 +43,7 @@ metrics. Metrics include connected gNodeB's and its status.
 
 ## Upcoming Changes in AMF
 
-- eMBB
+- eMBB.
 
 Compliance of the 5G Network functions can be found at [5G Compliance ](https://docs.sd-core.opennetworking.org/master/overview/3gpp-compliance-5g.html)
 
