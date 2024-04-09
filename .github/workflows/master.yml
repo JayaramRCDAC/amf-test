@@ -16,7 +16,7 @@ on:
 jobs:
   lint:
     name: lint
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -31,7 +31,7 @@ jobs:
           args: -v --config ./.golangci.yml
 
   license-check:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: lint
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
         uses: fsfe/reuse-action@v2
 
   fossa-check:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: license-check
     steps:
       - uses: actions/checkout@v4
@@ -51,7 +51,7 @@ jobs:
           fossa-api-key: 0c3bbcdf20e157bbd487dae173751b28
           
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: fossa-check
     steps:
       - uses: actions/checkout@v4
@@ -64,7 +64,7 @@ jobs:
         run: go build
 
   unit-tests:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -77,7 +77,7 @@ jobs:
         run: go test ./...
         
   docker-build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: unit-tests
     steps:
       - uses: actions/checkout@v4
@@ -91,11 +91,17 @@ jobs:
       - name: Build Docker image
         run: make docker-build
 
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.ACR_TOKEN }}" | docker login -u "${{ secrets.ACR_TOKEN_NAME }}" --password-stdin
+      - uses: docker/login-action@v3.1.0
+        with:
+          registry: docker.io
+          username: ${{ secrets.ACR_TOKEN_NAME }}
+          password: ${{ secrets.ACR_TOKEN }}
 
       - name: Tag Docker image
         run: docker tag 5gc-amf:0.0.1-dev jayaramrcdac/amf
 
       - name: Push Docker image to Docker Hub
         run: docker push jayaramrcdac/amf
+
+      - name: Cleanup Docker images
+        run: docker image prune -af
