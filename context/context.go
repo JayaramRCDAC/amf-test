@@ -473,8 +473,11 @@ func (context *AMFContext) AmfUeFindBySupiLocal(supi string) (ue *AmfUe, ok bool
 
 func (context *AMFContext) AmfUeFindByGuti(guti string) (ue *AmfUe, ok bool) {
 	ue, ok = context.AmfUeFindByGutiLocal(guti)
+	mcc, mnc, amfRegionID, amfSetID10, amfSetID6, tmsi := ParseGUTI(guti)
+
 	if ok {
 		logger.ContextLog.Infoln("Guti found locally : ", guti)
+		logger.ContextLog.Infoln("Guti-> MCC: ", mcc, " & MNC: ", mnc, " & AMF Reg Id 10: ", amfRegionID, " & AMF Set Id 10: ", amfSetID10, " & AMF Set Id 6: ", amfSetID6, " & TMSI: ", tmsi)
 		logger.ContextLog.Infoln("Serving amf status AmfUeFindByGuti(): ", ue.ServingAmfChanged)
 	} else if context.EnableDbStore {
 		ue, ok = DbFetchUeByGuti(guti)
@@ -602,4 +605,26 @@ func (context *AMFContext) Reset() {
 // Create new AMF context
 func AMF_Self() *AMFContext {
 	return &amfContext
+}
+
+func ParseGUTI(guti string) (string, string, string, string, string, string) {
+	// Extracting MCC (first 3 digits)
+	mcc := guti[0:3]
+
+	// Extracting MNC (next 2 digits)
+	mnc := guti[3:5]
+
+	// Extracting AMF Region ID (next 4 characters)
+	amfRegionID := guti[5:9]
+
+	// Extracting AMF Set ID (10-bit) (next 5 characters)
+	amfSetID10 := guti[9:14]
+
+	// Extracting AMF Set ID (6-bit) (next 3 characters)
+	amfSetID6 := guti[14:17]
+
+	// Extracting 5G TMSI (remaining characters)
+	tmsi := guti[17:]
+
+	return mcc, mnc, amfRegionID, amfSetID10, amfSetID6, tmsi
 }
