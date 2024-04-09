@@ -102,7 +102,7 @@ func (ran *AmfRan) NewRanUe(ranUeNgapID int64) (*RanUe, error) {
 	ranUe.Ran = ran
 	ranUe.Log = ran.Log.WithField(logger.FieldAmfUeNgapID, fmt.Sprintf("AMF_UE_NGAP_ID:%d", ranUe.AmfUeNgapId))
 	ran.RanUeList = append(ran.RanUeList, &ranUe)
-	ran.Log.Infoln("Old AMF name NewRanUe(): ", ranUe.OldAmfName)
+	ran.Log.Infoln("Old AMF name NewRanUe() %s: ", ranUe.OldAmfName)
 	self.RanUePool.Store(ranUe.AmfUeNgapId, &ranUe)
 	return &ranUe, nil
 }

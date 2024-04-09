@@ -590,8 +590,12 @@ func HandleInitialRegistration(ue *context.AmfUe, anType models.AccessType) erro
 
 	ue.ClearRegistrationData()
 
+	ue.GmmLog.Infoln("Serving amf status HandleInitialRegistration() after ClearRegistrationData(): ", ue.ServingAmfChanged)
+
 	// update Kgnb/Kn3iwf
 	ue.UpdateSecurityContext(anType)
+
+	ue.GmmLog.Infoln("Serving amf status HandleInitialRegistration() after UpdateSecurityContext(): ", ue.ServingAmfChanged)
 
 	// Registration with AMF re-allocation (TS 23.502 4.2.2.2.3)
 	if len(ue.SubscribedNssai) == 0 {
@@ -622,6 +626,8 @@ func HandleInitialRegistration(ue *context.AmfUe, anType models.AccessType) erro
 
 	storeLastVisitedRegisteredTAI(ue, ue.RegistrationRequest.LastVisitedRegisteredTAI)
 
+	ue.GmmLog.Infoln("Serving amf status HandleInitialRegistration() after storeLastVisitedRegisteredTAI(): ", ue.ServingAmfChanged)
+
 	if ue.RegistrationRequest.MICOIndication != nil {
 		ue.GmmLog.Warnf("Receive MICO Indication[RAAI: %d], Not Supported",
 			ue.RegistrationRequest.MICOIndication.GetRAAI())
@@ -634,6 +640,7 @@ func HandleInitialRegistration(ue *context.AmfUe, anType models.AccessType) erro
 
 	// TODO (step 10 optional): send Namf_Communication_RegistrationCompleteNotify to old AMF if need
 	if ue.ServingAmfChanged {
+		ue.GmmLog.Infoln("Serving amf status has changed: ", ue.ServingAmfChanged)
 		// If the AMF has changed the new AMF notifies the old AMF that the registration of the UE in the new AMF is completed
 		req := models.UeRegStatusUpdateReqData{
 			TransferStatus: models.UeContextTransferStatus_TRANSFERRED,
