@@ -1521,6 +1521,7 @@ func HandleInitialUEMessage(ran *context.AmfRan, message *ngapType.NGAPPDU, sctp
 				ranUe.Log.Warnf("Unknown UE [GUTI: %s]", guti)
 			} else {
 				ranUe.Log.Tracef("find AmfUe [GUTI: %s]", guti)
+				ranUe.Log.Infof("Serving amf status HandleRegistrationRequest() : ", amfUe.ServingAmfChanged)
 				/* checking the guti-ue belongs to this amf instance */
 				id, err := amfSelf.Drsm.FindOwnerInt32ID(amfUe.Tmsi)
 				if err != nil {
