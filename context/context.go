@@ -485,6 +485,7 @@ func (context *AMFContext) AmfUeFindByGuti(guti string) (ue *AmfUe, ok bool) {
 		}
 	} else {
 		logger.ContextLog.Infoln("Ue with Guti not found : ", guti)
+		logger.ContextLog.Infoln("Serving amf status AmfUeFindByGuti(): ", ue.ServingAmfChanged)
 	}
 	return
 }

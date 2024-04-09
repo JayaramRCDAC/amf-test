@@ -197,6 +197,8 @@ func DbFetchRanUeByRanUeNgapID(ranUeNgapID int64, ran *AmfRan) *RanUe {
 	// else return RanUE from newly fetched AmfUe
 	// and store in context
 	ranUe := ran.RanUeFindByRanUeNgapIDLocal(ranUeNgapID)
+	logger.ContextLog.Infoln("Old amf name: ", ranUe.OldAmfName)
+	logger.ContextLog.Infoln("Old amf amfUe serving amf status DbFetchRanUeByRanUeNgapID(): ", ranUe.AmfUe.ServingAmfChanged)
 	if ranUe != nil {
 		return ranUe
 	}

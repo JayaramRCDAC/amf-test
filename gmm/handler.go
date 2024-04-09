@@ -392,6 +392,8 @@ func HandleRegistrationRequest(ue *context.AmfUe, anType models.AccessType, proc
 
 	ue.GmmLog.Info("Handle Registration Request")
 
+	ue.GmmLog.Info("Serving amf status HandleRegistrationRequest() : ", ue.ServingAmfChanged)
+
 	if ue.RanUe[anType] == nil {
 		return fmt.Errorf("RanUe is nil")
 	}
