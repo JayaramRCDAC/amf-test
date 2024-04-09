@@ -475,6 +475,7 @@ func (context *AMFContext) AmfUeFindByGuti(guti string) (ue *AmfUe, ok bool) {
 	ue, ok = context.AmfUeFindByGutiLocal(guti)
 	if ok {
 		logger.ContextLog.Infoln("Guti found locally : ", guti)
+		logger.ContextLog.Infoln("Serving amf status AmfUeFindByGuti(): ", ue.ServingAmfChanged)
 	} else if context.EnableDbStore {
 		ue, ok = DbFetchUeByGuti(guti)
 		if ue != nil && ok {

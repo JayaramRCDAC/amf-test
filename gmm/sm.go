@@ -374,8 +374,9 @@ func ContextSetup(state *fsm.State, event fsm.EventType, args fsm.ArgsType) {
 		accessType := args[ArgAccessType].(models.AccessType)
 		amfUe.GmmLog.Infoln("EntryEvent at GMM State[ContextSetup]")
 		amfUe.GmmLog.Debugln("EntryEvent at GMM State[ContextSetup]")
-		amfUe.GmmLog.Infoln("Serving amf state: ", amfUe.ServingAmfChanged)
+		amfUe.GmmLog.Infoln("Serving amf state ContextSetup(): ", amfUe.ServingAmfChanged)
 		amfUe.PublishUeCtxtInfo()
+		amfUe.GmmLog.Infoln("Serving amf state ContextSetup() after PublishUeCtxtInfo(): ", amfUe.ServingAmfChanged)
 		switch message := gmmMessage.(type) {
 		case *nasMessage.RegistrationRequest:
 			amfUe.RegistrationRequest = message

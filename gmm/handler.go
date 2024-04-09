@@ -584,6 +584,8 @@ func IdentityVerification(ue *context.AmfUe) bool {
 func HandleInitialRegistration(ue *context.AmfUe, anType models.AccessType) error {
 	ue.GmmLog.Infoln("Handle InitialRegistration")
 
+	ue.GmmLog.Infoln("Serving amf status HandleInitialRegistration(): ", ue.ServingAmfChanged)
+
 	amfSelf := context.AMF_Self()
 
 	ue.ClearRegistrationData()
@@ -627,6 +629,8 @@ func HandleInitialRegistration(ue *context.AmfUe, anType models.AccessType) erro
 
 	// TODO: Negotiate DRX value if need (TS 23.501 5.4.5)
 	negotiateDRXParameters(ue, ue.RegistrationRequest.RequestedDRXParameters)
+
+	ue.GmmLog.Infoln("Serving amf status HandleInitialRegistration() after negotiateDRXParameters(): ", ue.ServingAmfChanged)
 
 	// TODO (step 10 optional): send Namf_Communication_RegistrationCompleteNotify to old AMF if need
 	if ue.ServingAmfChanged {
