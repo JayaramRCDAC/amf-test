@@ -261,8 +261,6 @@ func RegistrationStatusUpdate(ue *amf_context.AmfUe, request models.UeRegStatusU
 
 	res, httpResp, localErr := client.IndividualUeContextDocumentApi.RegistrationStatusUpdate(ctx, ueContextId, request)
 	logger.ConsumerLog.Info("RegStatusTransferComplete status RegistrationStatusUpdate(): ", res.RegStatusTransferComplete)
-	logger.ConsumerLog.Info("httpResp status RegistrationStatusUpdate(): ", httpResp.Status)
-	logger.ConsumerLog.Info("httpResp status code RegistrationStatusUpdate(): ", httpResp.StatusCode)
 
 	if localErr == nil {
 		regStatusTransferComplete = res.RegStatusTransferComplete
