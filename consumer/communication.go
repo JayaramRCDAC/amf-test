@@ -273,8 +273,10 @@ func RegistrationStatusUpdate(ue *amf_context.AmfUe, request models.UeRegStatusU
 		}
 		problem := localErr.(openapi.GenericOpenAPIError).Model().(models.ProblemDetails)
 		problemDetails = &problem
+		return
 	} else {
 		err = openapi.ReportError("%s: server no response", ue.TargetAmfUri)
+		return
 	}
 	return
 }
