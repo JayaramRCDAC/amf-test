@@ -248,16 +248,25 @@ func RegistrationStatusUpdate(ue *amf_context.AmfUe, request models.UeRegStatusU
 	regStatusTransferComplete bool, problemDetails *models.ProblemDetails, err error,
 ) {
 	configuration := Namf_Communication.NewConfiguration()
+	logger.ConsumerLog.Infof("---Configuration value %v", configuration)
 	configuration.SetBasePath(ue.TargetAmfUri)
 	client := Namf_Communication.NewAPIClient(configuration)
 
 	ctx, cancel := context.WithTimeout(context.TODO(), 30*time.Second)
 	defer cancel()
 	ueContextId := fmt.Sprintf("5g-guti-%s", ue.Guti)
+
+	logger.ConsumerLog.Info("5g-guti RegistrationStatusUpdate(): ", ue.Guti)
+	logger.ConsumerLog.Info("Serving amf status RegistrationStatusUpdate(): ", ue.ServingAmfChanged)
+
 	res, httpResp, localErr := client.IndividualUeContextDocumentApi.RegistrationStatusUpdate(ctx, ueContextId, request)
+	logger.ConsumerLog.Info("RegStatusTransferComplete status RegistrationStatusUpdate(): ", res.RegStatusTransferComplete)
+
 	if localErr == nil {
 		regStatusTransferComplete = res.RegStatusTransferComplete
 	} else if httpResp != nil {
+		logger.ConsumerLog.Info("httpResp status RegistrationStatusUpdate(): ", httpResp.Status)
+		logger.ConsumerLog.Info("httpResp status code RegistrationStatusUpdate(): ", httpResp.StatusCode)
 		if httpResp.Status != localErr.Error() {
 			err = localErr
 			return

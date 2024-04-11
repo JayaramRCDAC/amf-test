@@ -1276,8 +1276,10 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 			}
 			_, problemDetails, err = consumer.RegistrationStatusUpdate(ue, req)
 			if problemDetails != nil {
+				ue.GmmLog.Info("Value of ue: ", ue)
 				ue.GmmLog.Errorf("Registration Status Update Failed Problem[%+v]", problemDetails)
 			} else if err != nil {
+				ue.GmmLog.Info("Value of antype:", anType)
 				ue.GmmLog.Errorf("Registration Status Update Error[%+v]", err)
 			}
 
