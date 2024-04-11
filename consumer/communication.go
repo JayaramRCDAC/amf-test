@@ -266,15 +266,19 @@ func RegistrationStatusUpdate(ue *amf_context.AmfUe, request models.UeRegStatusU
 
 	if localErr == nil {
 		regStatusTransferComplete = res.RegStatusTransferComplete
+		return regStatusTransferComplete, nil, nil
 	} else if httpResp != nil {
+		logger.ConsumerLog.Info("httpResp status RegistrationStatusUpdate(): ", httpResp.Status)
+		logger.ConsumerLog.Info("httpResp status code RegistrationStatusUpdate(): ", httpResp.StatusCode)
 		if httpResp.Status != localErr.Error() {
 			err = localErr
-			return
+			return regStatusTransferComplete, nil, err
 		}
 		problem := localErr.(openapi.GenericOpenAPIError).Model().(models.ProblemDetails)
 		problemDetails = &problem
+		return regStatusTransferComplete, problemDetails, nil
 	} else {
 		err = openapi.ReportError("%s: server no response", ue.TargetAmfUri)
+		return regStatusTransferComplete, nil, err
 	}
-	return
 }

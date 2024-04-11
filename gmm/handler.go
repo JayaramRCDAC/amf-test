@@ -1228,7 +1228,12 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 
 		ue.GmmLog.Infof("RequestedNssai: %+v", requestedNssai)
 
+		ue.GmmLog.Infof("SubscribedNssai: %+v", ue.SubscribedNssai)
+
+		ue.GmmLog.Infof("SubscribedNssai length: %d", len(ue.SubscribedNssai))
+
 		needSliceSelection := false
+
 		for _, requestedSnssai := range requestedNssai {
 			if ue.InSubscribedNssai(*requestedSnssai.ServingSnssai) {
 				allowedSnssai := models.AllowedSnssai{
