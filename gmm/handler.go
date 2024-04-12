@@ -1216,12 +1216,92 @@ func getSubscribedNssai(ue *context.AmfUe) {
 	}
 }
 
+func snssaiToModels(lengthOfSnssaiContents uint8, buf []byte) (models.MappingOfSnssai, error) {
+
+	snssai := models.MappingOfSnssai{}
+
+	switch lengthOfSnssaiContents {
+	case 0x01: // SST
+		snssai.ServingSnssai = &models.Snssai{
+			Sst: int32(buf[1]),
+		}
+		return snssai, nil
+	case 0x02: // SST and mapped HPLMN SST
+		snssai.ServingSnssai = &models.Snssai{
+			Sst: int32(buf[1]),
+		}
+		snssai.HomeSnssai = &models.Snssai{
+			Sst: int32(buf[2]),
+		}
+		return snssai, nil
+	case 0x04: // SST and SD
+		snssai.ServingSnssai = &models.Snssai{
+			Sst: int32(buf[1]),
+			Sd:  hex.EncodeToString(buf[2:5]),
+		}
+		return snssai, nil
+	case 0x05: // SST, SD and mapped HPLMN SST
+		snssai.ServingSnssai = &models.Snssai{
+			Sst: int32(buf[1]),
+			Sd:  hex.EncodeToString(buf[2:5]),
+		}
+		snssai.HomeSnssai = &models.Snssai{
+			Sst: int32(buf[5]),
+		}
+		return snssai, nil
+	case 0x08: // SST, SD, mapped HPLMN SST and mapped HPLMN SD
+		snssai.ServingSnssai = &models.Snssai{
+			Sst: int32(buf[1]),
+			Sd:  hex.EncodeToString(buf[2:5]),
+		}
+		snssai.HomeSnssai = &models.Snssai{
+			Sst: int32(buf[5]),
+			Sd:  hex.EncodeToString(buf[6:9]),
+		}
+		return snssai, nil
+	default:
+		return snssai, fmt.Errorf("Invalid length of S-NSSAI contents: %d", lengthOfSnssaiContents)
+	}
+}
+
+func RequestedNssaiToModelsTest(nasNssai *nasType.RequestedNSSAI) ([]models.MappingOfSnssai, error) {
+	var requestNssai []models.MappingOfSnssai
+
+	buf := nasNssai.GetSNSSAIValue()
+	logger.ContextLog.Infoln("*** buf RequestedNssaiToModelsTest(): ", buf)
+
+	lengthOfBuf := int(nasNssai.GetLen())
+	logger.ContextLog.Infoln("*** lengthOfBuf RequestedNssaiToModelsTest(): ", lengthOfBuf)
+
+	offset := 0
+	for offset < lengthOfBuf {
+		lengthOfSnssaiContents := buf[offset]
+		logger.ContextLog.Infoln("*** lengthOfSnssaiContents RequestedNssaiToModelsTest(): ", lengthOfSnssaiContents)
+
+		if snssai, err := snssaiToModels(lengthOfSnssaiContents, buf[offset:]); err != nil {
+			logger.ContextLog.Infoln("*** err RequestedNssaiToModelsTest(): ", lengthOfSnssaiContents)
+			return nil, err
+		} else {
+			requestNssai = append(requestNssai, snssai)
+			logger.ContextLog.Infoln("*** requestNssai append RequestedNssaiToModelsTest(): ", requestNssai)
+			// lengthOfSnssaiContents is 1 byte
+			offset += int(lengthOfSnssaiContents + 1)
+			logger.ContextLog.Infoln("*** offset append RequestedNssaiToModelsTest(): ", offset)
+		}
+	}
+
+	logger.ContextLog.Infoln("*** requestNssai RequestedNssaiToModelsTest(): ", requestNssai)
+	return requestNssai, nil
+}
+
 // TS 23.502 4.2.2.2.3 Registration with AMF Re-allocation
 func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 	amfSelf := context.AMF_Self()
 	if ue.RegistrationRequest.RequestedNSSAI != nil {
 		ue.GmmLog.Infof("*** RequestedNssai before nas convert: %+v", ue.RegistrationRequest.RequestedNSSAI)
+		RequestedNssaiToModelsTest(ue.RegistrationRequest.RequestedNSSAI)
 		requestedNssai, err := nasConvert.RequestedNssaiToModels(ue.RegistrationRequest.RequestedNSSAI)
+
 		if err != nil {
 			return fmt.Errorf("Decode failed at RequestedNSSAI[%s]", err)
 		}
