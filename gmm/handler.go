@@ -1219,13 +1219,9 @@ func getSubscribedNssai(ue *context.AmfUe) {
 // TS 23.502 4.2.2.2.3 Registration with AMF Re-allocation
 func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 	amfSelf := context.AMF_Self()
-
 	if ue.RegistrationRequest.RequestedNSSAI != nil {
-
 		ue.GmmLog.Infof("*** RequestedNssai before nas convert: %+v", ue.RegistrationRequest.RequestedNSSAI)
-
 		requestedNssai, err := nasConvert.RequestedNssaiToModels(ue.RegistrationRequest.RequestedNSSAI)
-
 		if err != nil {
 			return fmt.Errorf("Decode failed at RequestedNSSAI[%s]", err)
 		}
