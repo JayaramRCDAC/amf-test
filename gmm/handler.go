@@ -584,18 +584,18 @@ func IdentityVerification(ue *context.AmfUe) bool {
 func HandleInitialRegistration(ue *context.AmfUe, anType models.AccessType) error {
 	ue.GmmLog.Infoln("Handle InitialRegistration")
 
-	ue.GmmLog.Infoln("Serving amf status HandleInitialRegistration(): ", ue.ServingAmfChanged)
+	ue.GmmLog.Infoln("*** Serving amf status HandleInitialRegistration(): ", ue.ServingAmfChanged)
 
 	amfSelf := context.AMF_Self()
 
 	ue.ClearRegistrationData()
 
-	ue.GmmLog.Infoln("Serving amf status HandleInitialRegistration() after ClearRegistrationData(): ", ue.ServingAmfChanged)
+	ue.GmmLog.Infoln("*** Serving amf status HandleInitialRegistration() after ClearRegistrationData(): ", ue.ServingAmfChanged)
 
 	// update Kgnb/Kn3iwf
 	ue.UpdateSecurityContext(anType)
 
-	ue.GmmLog.Infoln("Serving amf status HandleInitialRegistration() after UpdateSecurityContext(): ", ue.ServingAmfChanged)
+	ue.GmmLog.Infoln("*** Serving amf status HandleInitialRegistration() after UpdateSecurityContext(): ", ue.ServingAmfChanged)
 
 	// Registration with AMF re-allocation (TS 23.502 4.2.2.2.3)
 	if len(ue.SubscribedNssai) == 0 {
@@ -626,7 +626,7 @@ func HandleInitialRegistration(ue *context.AmfUe, anType models.AccessType) erro
 
 	storeLastVisitedRegisteredTAI(ue, ue.RegistrationRequest.LastVisitedRegisteredTAI)
 
-	ue.GmmLog.Infoln("Serving amf status HandleInitialRegistration() after storeLastVisitedRegisteredTAI(): ", ue.ServingAmfChanged)
+	ue.GmmLog.Infoln("*** Serving amf status HandleInitialRegistration() after storeLastVisitedRegisteredTAI(): ", ue.ServingAmfChanged)
 
 	if ue.RegistrationRequest.MICOIndication != nil {
 		ue.GmmLog.Warnf("Receive MICO Indication[RAAI: %d], Not Supported",
@@ -636,11 +636,11 @@ func HandleInitialRegistration(ue *context.AmfUe, anType models.AccessType) erro
 	// TODO: Negotiate DRX value if need (TS 23.501 5.4.5)
 	negotiateDRXParameters(ue, ue.RegistrationRequest.RequestedDRXParameters)
 
-	ue.GmmLog.Infoln("Serving amf status HandleInitialRegistration() after negotiateDRXParameters(): ", ue.ServingAmfChanged)
+	ue.GmmLog.Infoln("*** Serving amf status HandleInitialRegistration() after negotiateDRXParameters(): ", ue.ServingAmfChanged)
 
 	// TODO (step 10 optional): send Namf_Communication_RegistrationCompleteNotify to old AMF if need
 	if ue.ServingAmfChanged {
-		ue.GmmLog.Infoln("Serving amf status has changed: ", ue.ServingAmfChanged)
+		ue.GmmLog.Infoln("*** Serving amf status has changed: ", ue.ServingAmfChanged)
 		// If the AMF has changed the new AMF notifies the old AMF that the registration of the UE in the new AMF is completed
 		req := models.UeRegStatusUpdateReqData{
 			TransferStatus: models.UeContextTransferStatus_TRANSFERRED,
@@ -1226,11 +1226,11 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 			return fmt.Errorf("Decode failed at RequestedNSSAI[%s]", err)
 		}
 
-		ue.GmmLog.Infof("RequestedNssai: %+v", requestedNssai)
+		ue.GmmLog.Infof("*** RequestedNssai: %+v", requestedNssai)
 
-		ue.GmmLog.Infof("SubscribedNssai: %+v", ue.SubscribedNssai)
+		ue.GmmLog.Infof("*** SubscribedNssai: %+v", ue.SubscribedNssai)
 
-		ue.GmmLog.Infof("SubscribedNssai length: %d", len(ue.SubscribedNssai))
+		ue.GmmLog.Infof("*** SubscribedNssai length: %d", len(ue.SubscribedNssai))
 
 		needSliceSelection := false
 
@@ -1281,10 +1281,10 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 			}
 			_, problemDetails, err = consumer.RegistrationStatusUpdate(ue, req)
 			if problemDetails != nil {
-				ue.GmmLog.Info("Value of ue: ", ue)
+				ue.GmmLog.Info("*** Value of ue: ", ue)
 				ue.GmmLog.Errorf("Registration Status Update Failed Problem[%+v]", problemDetails)
 			} else if err != nil {
-				ue.GmmLog.Info("Value of antype:", anType)
+				ue.GmmLog.Info("*** Value of antype:", anType)
 				ue.GmmLog.Errorf("Registration Status Update Error[%+v]", err)
 			}
 

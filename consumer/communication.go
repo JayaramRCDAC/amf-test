@@ -248,7 +248,7 @@ func RegistrationStatusUpdate(ue *amf_context.AmfUe, request models.UeRegStatusU
 	regStatusTransferComplete bool, problemDetails *models.ProblemDetails, err error,
 ) {
 	configuration := Namf_Communication.NewConfiguration()
-	logger.ConsumerLog.Infof("---Configuration value %v", configuration)
+	logger.ConsumerLog.Infof("*** Configuration value %v", configuration)
 	configuration.SetBasePath(ue.TargetAmfUri)
 	client := Namf_Communication.NewAPIClient(configuration)
 
@@ -256,19 +256,21 @@ func RegistrationStatusUpdate(ue *amf_context.AmfUe, request models.UeRegStatusU
 	defer cancel()
 	ueContextId := fmt.Sprintf("5g-guti-%s", ue.Guti)
 
-	logger.ConsumerLog.Info("5g-guti RegistrationStatusUpdate(): ", ue.Guti)
-	logger.ConsumerLog.Info("Serving amf status RegistrationStatusUpdate(): ", ue.ServingAmfChanged)
+	logger.ConsumerLog.Info("*** 5g-guti RegistrationStatusUpdate(): ", ue.Guti)
+	logger.ConsumerLog.Info("*** Serving amf status RegistrationStatusUpdate(): ", ue.ServingAmfChanged)
 
 	res, httpResp, localErr := client.IndividualUeContextDocumentApi.RegistrationStatusUpdate(ctx, ueContextId, request)
-	logger.ConsumerLog.Info("RegStatusTransferComplete status RegistrationStatusUpdate(): ", res.RegStatusTransferComplete)
+	logger.ConsumerLog.Info("*** RegStatusTransferComplete status RegistrationStatusUpdate(): ", res.RegStatusTransferComplete)
 
 	if localErr == nil {
+		logger.ConsumerLog.Info("*** Complete RegistrationStatusUpdate(): ", httpResp.Status)
 		regStatusTransferComplete = res.RegStatusTransferComplete
 		return regStatusTransferComplete, nil, nil
 	} else if httpResp != nil {
-		logger.ConsumerLog.Info("httpResp status RegistrationStatusUpdate(): ", httpResp.Status)
-		logger.ConsumerLog.Info("httpResp status code RegistrationStatusUpdate(): ", httpResp.StatusCode)
+		logger.ConsumerLog.Info("*** httpResp status RegistrationStatusUpdate(): ", httpResp.Status)
+		logger.ConsumerLog.Info("*** httpResp status code RegistrationStatusUpdate(): ", httpResp.StatusCode)
 		if httpResp.Status != localErr.Error() {
+			logger.ConsumerLog.Info("*** httpResp.status != localErr RegistrationStatusUpdate(): ", httpResp.StatusCode)
 			err = localErr
 			return regStatusTransferComplete, nil, err
 		}

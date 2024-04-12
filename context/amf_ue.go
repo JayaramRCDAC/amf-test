@@ -558,10 +558,13 @@ func (ue *AmfUe) InAllowedNssai(targetSNssai models.Snssai, anType models.Access
 
 func (ue *AmfUe) InSubscribedNssai(targetSNssai models.Snssai) bool {
 	for _, sNssai := range ue.SubscribedNssai {
+		logger.ContextLog.Infof("*** Deep equal compare %v & %v InSubscribedNssai()", *sNssai.SubscribedSnssai, targetSNssai)
 		if reflect.DeepEqual(*sNssai.SubscribedSnssai, targetSNssai) {
+			logger.ContextLog.Info("*** Deep equal success InSubscribedNssai()")
 			return true
 		}
 	}
+	logger.ContextLog.Info("*** Deep equal failed InSubscribedNssai()")
 	return false
 }
 
