@@ -392,7 +392,7 @@ func HandleRegistrationRequest(ue *context.AmfUe, anType models.AccessType, proc
 
 	ue.GmmLog.Info("Handle Registration Request")
 
-	ue.GmmLog.Info("Serving amf status HandleRegistrationRequest() : ", ue.ServingAmfChanged)
+	ue.GmmLog.Info("*** Serving amf status HandleRegistrationRequest() : ", ue.ServingAmfChanged)
 
 	if ue.RanUe[anType] == nil {
 		return fmt.Errorf("RanUe is nil")
@@ -1221,7 +1221,11 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 	amfSelf := context.AMF_Self()
 
 	if ue.RegistrationRequest.RequestedNSSAI != nil {
+
+		ue.GmmLog.Infof("*** RequestedNssai before nas convert: %+v", ue.RegistrationRequest.RequestedNSSAI)
+
 		requestedNssai, err := nasConvert.RequestedNssaiToModels(ue.RegistrationRequest.RequestedNSSAI)
+
 		if err != nil {
 			return fmt.Errorf("Decode failed at RequestedNSSAI[%s]", err)
 		}
@@ -1230,11 +1234,14 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 
 		ue.GmmLog.Infof("*** SubscribedNssai: %+v", ue.SubscribedNssai)
 
+		ue.GmmLog.Infof("*** RequestedNssai length: %d", len(requestedNssai))
+
 		ue.GmmLog.Infof("*** SubscribedNssai length: %d", len(ue.SubscribedNssai))
 
 		needSliceSelection := false
 
 		for _, requestedSnssai := range requestedNssai {
+			ue.GmmLog.Infof("*** Requested SNSSAI: %+v", *requestedSnssai.ServingSnssai)
 			if ue.InSubscribedNssai(*requestedSnssai.ServingSnssai) {
 				allowedSnssai := models.AllowedSnssai{
 					AllowedSnssai: &models.Snssai{

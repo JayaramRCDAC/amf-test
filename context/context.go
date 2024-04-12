@@ -477,8 +477,8 @@ func (context *AMFContext) AmfUeFindByGuti(guti string) (ue *AmfUe, ok bool) {
 
 	if ok {
 		logger.ContextLog.Infoln("Guti found locally : ", guti)
-		logger.ContextLog.Infoln("Guti-> MCC: ", mcc, " & MNC: ", mnc, " & AMF Reg Id 10: ", amfRegionID, " & AMF Set Id 10: ", amfSetID10, " & AMF Set Id 6: ", amfSetID6, " & TMSI: ", tmsi)
-		logger.ContextLog.Infoln("Serving amf status AmfUeFindByGuti(): ", ue.ServingAmfChanged)
+		logger.ContextLog.Infoln("*** Guti-> MCC: ", mcc, " & MNC: ", mnc, " & AMF Reg Id 10: ", amfRegionID, " & AMF Set Id 10: ", amfSetID10, " & AMF Set Id 6: ", amfSetID6, " & TMSI: ", tmsi)
+		logger.ContextLog.Infoln("*** Serving amf status AmfUeFindByGuti(): ", ue.ServingAmfChanged)
 	} else if context.EnableDbStore {
 		ue, ok = DbFetchUeByGuti(guti)
 		if ue != nil && ok {

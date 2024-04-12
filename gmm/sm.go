@@ -372,11 +372,11 @@ func ContextSetup(state *fsm.State, event fsm.EventType, args fsm.ArgsType) {
 		amfUe := args[ArgAmfUe].(*context.AmfUe)
 		gmmMessage := args[ArgNASMessage]
 		accessType := args[ArgAccessType].(models.AccessType)
-		amfUe.GmmLog.Infoln("EntryEvent at GMM State[ContextSetup]")
+		amfUe.GmmLog.Infoln("*** EntryEvent at GMM State[ContextSetup]")
 		amfUe.GmmLog.Debugln("EntryEvent at GMM State[ContextSetup]")
-		amfUe.GmmLog.Infoln("Serving amf state ContextSetup(): ", amfUe.ServingAmfChanged)
+		amfUe.GmmLog.Infoln("*** Serving amf state ContextSetup(): ", amfUe.ServingAmfChanged)
 		amfUe.PublishUeCtxtInfo()
-		amfUe.GmmLog.Infoln("Serving amf state ContextSetup() after PublishUeCtxtInfo(): ", amfUe.ServingAmfChanged)
+		amfUe.GmmLog.Infoln("*** Serving amf state ContextSetup() after PublishUeCtxtInfo(): ", amfUe.ServingAmfChanged)
 		switch message := gmmMessage.(type) {
 		case *nasMessage.RegistrationRequest:
 			amfUe.RegistrationRequest = message
@@ -403,7 +403,7 @@ func ContextSetup(state *fsm.State, event fsm.EventType, args fsm.ArgsType) {
 		amfUe := args[ArgAmfUe].(*context.AmfUe)
 		gmmMessage := args[ArgNASMessage].(*nas.GmmMessage)
 		accessType := args[ArgAccessType].(models.AccessType)
-		amfUe.GmmLog.Infoln("GmmMessageEvent at GMM State[ContextSetup]")
+		amfUe.GmmLog.Infoln("*** GmmMessageEvent at GMM State[ContextSetup]")
 		amfUe.GmmLog.Debugln("GmmMessageEvent at GMM State[ContextSetup]")
 		switch gmmMessage.GetMessageType() {
 		case nas.MsgTypeIdentityResponse:
