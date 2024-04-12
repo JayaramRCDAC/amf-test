@@ -1299,7 +1299,12 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 	amfSelf := context.AMF_Self()
 	if ue.RegistrationRequest.RequestedNSSAI != nil {
 		ue.GmmLog.Infof("*** RequestedNssai before nas convert: %+v", ue.RegistrationRequest.RequestedNSSAI)
-		RequestedNssaiToModelsTest(ue.RegistrationRequest.RequestedNSSAI)
+
+		requestedNssaiT, errT := RequestedNssaiToModelsTest(ue.RegistrationRequest.RequestedNSSAI)
+
+		ue.GmmLog.Infof("*** RequestedNssaiT: %+v", requestedNssaiT)
+		ue.GmmLog.Infof("*** RequestedNssaiErrT: %+v", errT)
+
 		requestedNssai, err := nasConvert.RequestedNssaiToModels(ue.RegistrationRequest.RequestedNSSAI)
 
 		if err != nil {
