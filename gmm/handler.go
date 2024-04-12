@@ -1302,12 +1302,12 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 		requestedNssaiT, errT := RequestedNssaiToModelsTest(ue.RegistrationRequest.RequestedNSSAI)
 
 		ue.GmmLog.Infof("*** RequestedNssaiT: %+v", requestedNssaiT)
+
 		ue.GmmLog.Infof("*** RequestedNssaiErrT: %+v", errT)
 
 		requestedNssai, err := nasConvert.RequestedNssaiToModels(ue.RegistrationRequest.RequestedNSSAI)
-
 		if err != nil {
-			return fmt.Errorf("Decode failed at RequestedNSSAI[%s]", err)
+			return fmt.Errorf("decode failed at RequestedNSSAI[%s]", err)
 		}
 
 		ue.GmmLog.Infof("*** RequestedNssai: %+v", requestedNssai)
