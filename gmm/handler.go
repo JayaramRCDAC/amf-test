@@ -1217,7 +1217,6 @@ func getSubscribedNssai(ue *context.AmfUe) {
 }
 
 func snssaiToModels(lengthOfSnssaiContents uint8, buf []byte) (models.MappingOfSnssai, error) {
-
 	snssai := models.MappingOfSnssai{}
 
 	switch lengthOfSnssaiContents {
