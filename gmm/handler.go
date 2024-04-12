@@ -1362,6 +1362,9 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 				return fmt.Errorf("Handle Requested Nssai of UE failed")
 			}
 
+			ue.GmmLog.Info("*** ue.AllowedNssai: ", ue.AllowedNssai)
+			ue.GmmLog.Info("*** ue.ConfiguredNssai: ", ue.ConfiguredNssai)
+
 			// Step 5: Initial AMF send Namf_Communication_RegistrationCompleteNotify to old AMF
 			req := models.UeRegStatusUpdateReqData{
 				TransferStatus: models.UeContextTransferStatus_NOT_TRANSFERRED,
