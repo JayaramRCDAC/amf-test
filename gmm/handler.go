@@ -669,6 +669,7 @@ func HandleInitialRegistration(ue *context.AmfUe, anType models.AccessType) erro
 
 	if ue.ServingAmfChanged || ue.State[models.AccessType_NON_3_GPP_ACCESS].Is(context.Registered) ||
 		!ue.SubscriptionDataValid {
+		ue.GmmLog.Infoln("*** ue.ServingAmfChanged || ue.State[models.AccessType_NON_3_GPP_ACCESS].Is(context.Registered) || !ue.SubscriptionDataValid: ", ue.ServingAmfChanged)
 		if err := communicateWithUDM(ue, anType); err != nil {
 			return err
 		}
@@ -1278,10 +1279,13 @@ func RequestedNssaiToModelsTest(nasNssai *nasType.RequestedNSSAI) ([]models.Mapp
 		logger.ContextLog.Infoln("*** lengthOfSnssaiContents RequestedNssaiToModelsTest(): ", lengthOfSnssaiContents)
 
 		if snssai, err := snssaiToModels(lengthOfSnssaiContents, buf[offset:]); err != nil {
-			logger.ContextLog.Infoln("*** err RequestedNssaiToModelsTest(): ", lengthOfSnssaiContents)
+			logger.ContextLog.Infoln("*** err!!!! RequestedNssaiToModelsTest(): ")
 			return nil, err
 		} else {
+			logger.ContextLog.Infoln("*** snssai RequestedNssaiToModelsTest(): ", snssai)
+
 			requestNssai = append(requestNssai, snssai)
+
 			logger.ContextLog.Infoln("*** requestNssai append RequestedNssaiToModelsTest(): ", requestNssai)
 			// lengthOfSnssaiContents is 1 byte
 			offset += int(lengthOfSnssaiContents + 1)
@@ -1350,6 +1354,8 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 				}
 			}
 
+			ue.GmmLog.Info("*** ue.NssfUri: ", ue.NssfUri)
+
 			// Step 4
 			problemDetails, err := consumer.NSSelectionGetForRegistration(ue, requestedNssai)
 			if problemDetails != nil {
@@ -1362,6 +1368,7 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 				return fmt.Errorf("Handle Requested Nssai of UE failed")
 			}
 
+			ue.GmmLog.Info("*** ue.NetworkSliceInfo: ", ue.NetworkSliceInfo)
 			ue.GmmLog.Info("*** ue.AllowedNssai: ", ue.AllowedNssai)
 			ue.GmmLog.Info("*** ue.ConfiguredNssai: ", ue.ConfiguredNssai)
 
@@ -1371,10 +1378,8 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 			}
 			_, problemDetails, err = consumer.RegistrationStatusUpdate(ue, req)
 			if problemDetails != nil {
-				ue.GmmLog.Info("*** Value of ue: ", ue)
 				ue.GmmLog.Errorf("Registration Status Update Failed Problem[%+v]", problemDetails)
 			} else if err != nil {
-				ue.GmmLog.Info("*** Value of antype:", anType)
 				ue.GmmLog.Errorf("Registration Status Update Error[%+v]", err)
 			}
 
