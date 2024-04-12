@@ -596,7 +596,35 @@ func HandleRegistrationStatusUpdateRequest(request *httpwrapper.Request) *httpwr
 	}
 	// ueRegStatusUpdateRspData, problemDetails := RegistrationStatusUpdateProcedure(ueContextID, ueRegStatusUpdateReqData)
 	if msg.ProblemDetails != nil {
-		return httpwrapper.NewResponse(int(msg.ProblemDetails.(*models.ProblemDetails).Status), nil, msg.ProblemDetails.(*models.ProblemDetails))
+		logger.CommLog.Info("---testing the condition msg.problemdetail nil---", msg.ProblemDetails)
+		// logger.CommLog.Infof("---problemdetailstatus infof: %d", int(msg.ProblemDetails.(*models.ProblemDetails).Status))
+		// logger.CommLog.Infof("---problemdetails infof: %v", msg.ProblemDetails.(*models.ProblemDetails))
+		pd := msg.ProblemDetails.(*models.ProblemDetails)
+		logger.CommLog.Info("value of pd", pd)
+		logger.CommLog.Infof("value of pd: %v", pd)
+		if pd != nil {
+			logger.CommLog.Info("---testing the condition models.problemdetails nil---")
+			logger.CommLog.Info("---problemdetailstatus:")
+			logger.CommLog.Info(int(msg.ProblemDetails.(*models.ProblemDetails).Status))
+			logger.CommLog.Info("---problemdetails:", msg.ProblemDetails.(*models.ProblemDetails))
+			return httpwrapper.NewResponse(int(msg.ProblemDetails.(*models.ProblemDetails).Status), nil, msg.ProblemDetails.(*models.ProblemDetails))
+		} else if msg.RespData != nil {
+			logger.CommLog.Info("testing msg.responsedata nil")
+			// logger.CommLog.Info("Response with problem details")
+			// problemDetails := &models.ProblemDetails{
+			// 	Status: http.StatusNotFound,
+			// 	Cause:  "CONTEXT_NOT_FOUND",
+			// }
+			// return httpwrapper.NewResponse(http.StatusForbidden, nil, problemDetails)
+			return httpwrapper.NewResponse(http.StatusOK, nil, ueRegStatusUpdateRspData)
+		}
+		logger.CommLog.Info("Response with problem details")
+		problemDetails := &models.ProblemDetails{
+			Status: http.StatusNotFound,
+			Cause:  "CONTEXT_NOT_FOUND",
+		}
+		return httpwrapper.NewResponse(http.StatusForbidden, nil, problemDetails)
+		// return httpwrapper.NewResponse(int(msg.ProblemDetails.(*models.ProblemDetails).Status), nil, msg.ProblemDetails.(*models.ProblemDetails))
 	} else {
 		return httpwrapper.NewResponse(http.StatusOK, nil, ueRegStatusUpdateRspData)
 	}
