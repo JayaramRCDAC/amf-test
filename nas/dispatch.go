@@ -30,7 +30,11 @@ func Dispatch(ue *context.AmfUe, accessType models.AccessType, procedureCode int
 		return fmt.Errorf("UE State is empty (accessType=%q). Can't send GSM Message", accessType)
 	}
 
-	logger.ContextLog.Info("** NAS dispatch state: ", ue.State[accessType])
+	logger.ContextLog.Info("*** NAS dispatch state: ", ue.State[accessType])
+	logger.ContextLog.Info("*** NAS dispatch GmmMessageEvent: ", gmm.GmmMessageEvent)
+	logger.ContextLog.Info("*** NAS dispatch gmm.ArgAccessType: ", gmm.ArgAccessType)
+	logger.ContextLog.Info("*** NAS dispatch gmm.ArgNASMessage: ", gmm.ArgNASMessage)
+	logger.ContextLog.Info("*** NAS dispatch gmm.ArgProcedureCode: ", gmm.ArgProcedureCode)
 
 	return gmm.GmmFSM.SendEvent(ue.State[accessType], gmm.GmmMessageEvent, fsm.ArgsType{
 		gmm.ArgAmfUe:         ue,
