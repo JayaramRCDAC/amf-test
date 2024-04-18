@@ -1528,7 +1528,7 @@ func HandleInitialUEMessage(ran *context.AmfRan, message *ngapType.NGAPPDU, sctp
 					ranUe.Log.Errorf("Error checking the guti-ue in this instance: %v", err)
 				}
 				if id != nil && id.PodName != os.Getenv("HOSTNAME") && amfSelf.EnableSctpLb {
-					ranUe.Log.Info("*** os.Getenv(\"HOSTNAME\") HandleRegistrationRequest(): ", os.Getenv("HOSTNAME"))
+					logger.NgapLog.Info("*** os.Getenv(\"HOSTNAME\") HandleRegistrationRequest(): ", os.Getenv("HOSTNAME"))
 
 					rsp := &sdcoreAmfServer.AmfMessage{}
 					rsp.VerboseMsg = "Redirect Msg From AMF Pod !"
