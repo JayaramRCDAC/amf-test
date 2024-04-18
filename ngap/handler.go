@@ -1528,6 +1528,8 @@ func HandleInitialUEMessage(ran *context.AmfRan, message *ngapType.NGAPPDU, sctp
 					ranUe.Log.Errorf("Error checking the guti-ue in this instance: %v", err)
 				}
 				if id != nil && id.PodName != os.Getenv("HOSTNAME") && amfSelf.EnableSctpLb {
+					ranUe.Log.Info("*** os.Getenv(\"HOSTNAME\") HandleRegistrationRequest(): ", os.Getenv("HOSTNAME"))
+
 					rsp := &sdcoreAmfServer.AmfMessage{}
 					rsp.VerboseMsg = "Redirect Msg From AMF Pod !"
 					rsp.Msgtype = sdcoreAmfServer.MsgType_REDIRECT_MSG
@@ -1537,6 +1539,7 @@ func HandleInitialUEMessage(ran *context.AmfRan, message *ngapType.NGAPPDU, sctp
 					rsp.GnbId = ran.GnbId
 					rsp.Msg = sctplbMsg.Msg
 					if ranUe != nil && ranUe.AmfUe != nil {
+						ranUe.Log.Info("*** ranUe.AmfUe.Remove()HandleRegistrationRequest(): ")
 						ranUe.AmfUe.Remove()
 					} else if ranUe != nil {
 						if err := ranUe.Remove(); err != nil {
@@ -1549,6 +1552,7 @@ func HandleInitialUEMessage(ran *context.AmfRan, message *ngapType.NGAPPDU, sctp
 
 				if amfUe.CmConnect(ran.AnType) {
 					ranUe.Log.Debug("Implicit Deregistration")
+					ranUe.Log.Info("*** Implicit Deregistration")
 					ranUe.Log.Tracef("RanUeNgapID[%d]", amfUe.RanUe[ran.AnType].RanUeNgapId)
 					amfUe.DetachRanUe(ran.AnType)
 				}
@@ -1573,6 +1577,7 @@ func HandleInitialUEMessage(ran *context.AmfRan, message *ngapType.NGAPPDU, sctp
 
 	if uEContextRequest != nil {
 		ran.Log.Debug("Trigger initial Context Setup procedure")
+		ran.Log.Info("*** Trigger initial Context Setup procedure")
 		ranUe.UeContextRequest = true
 		// TODO: Trigger Initial Context Setup procedure
 	} else {

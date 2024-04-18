@@ -11,6 +11,7 @@ import (
 
 	"github.com/omec-project/amf/context"
 	"github.com/omec-project/amf/gmm"
+	"github.com/omec-project/amf/logger"
 	"github.com/omec-project/nas"
 	"github.com/omec-project/openapi/models"
 	"github.com/omec-project/util/fsm"
@@ -28,6 +29,8 @@ func Dispatch(ue *context.AmfUe, accessType models.AccessType, procedureCode int
 	if ue.State[accessType] == nil {
 		return fmt.Errorf("UE State is empty (accessType=%q). Can't send GSM Message", accessType)
 	}
+
+	logger.ContextLog.Info("** NAS dispatch state: ", ue.State[accessType])
 
 	return gmm.GmmFSM.SendEvent(ue.State[accessType], gmm.GmmMessageEvent, fsm.ArgsType{
 		gmm.ArgAmfUe:         ue,

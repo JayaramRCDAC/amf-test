@@ -764,6 +764,8 @@ func HandleInitialRegistration(ue *context.AmfUe, anType models.AccessType) erro
 		}
 		ue.RegistrationAcceptForNon3GPPAccess = registrationAccept
 	}
+	ue.GmmLog.Info("Handle InitialRegistration Complete")
+
 	return nil
 }
 
