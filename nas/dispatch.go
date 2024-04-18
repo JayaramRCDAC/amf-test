@@ -32,9 +32,10 @@ func Dispatch(ue *context.AmfUe, accessType models.AccessType, procedureCode int
 
 	logger.ContextLog.Info("*** NAS dispatch state: ", ue.State[accessType])
 	logger.ContextLog.Info("*** NAS dispatch GmmMessageEvent: ", gmm.GmmMessageEvent)
-	logger.ContextLog.Info("*** NAS dispatch gmm.ArgAccessType: ", gmm.ArgAccessType)
-	logger.ContextLog.Info("*** NAS dispatch gmm.ArgNASMessage: ", gmm.ArgNASMessage)
-	logger.ContextLog.Info("*** NAS dispatch gmm.ArgProcedureCode: ", gmm.ArgProcedureCode)
+	logger.ContextLog.Info("*** NAS dispatch gmm.ArgAmfUe: ", ue)
+	logger.ContextLog.Info("*** NAS dispatch gmm.ArgAccessType: ", accessType)
+	logger.ContextLog.Info("*** NAS dispatch gmm.ArgNASMessage: ", msg.GmmMessage)
+	logger.ContextLog.Info("*** NAS dispatch gmm.ArgProcedureCode: ", procedureCode)
 
 	return gmm.GmmFSM.SendEvent(ue.State[accessType], gmm.GmmMessageEvent, fsm.ArgsType{
 		gmm.ArgAmfUe:         ue,
