@@ -475,10 +475,14 @@ func (context *AMFContext) AmfUeFindByGuti(guti string) (ue *AmfUe, ok bool) {
 	ue, ok = context.AmfUeFindByGutiLocal(guti)
 	mcc, mnc, amfRegionID, amfSetID10, amfSetID6, tmsi := ParseGUTI(guti)
 
-	// logger.ContextLog.Infoln("*** AMF IP: ", ue.AmfInstanceIp)
-	// logger.ContextLog.Infoln("*** AMF Name: ", ue.AmfInstanceName)
-	// logger.ContextLog.Infoln("*** Serving AMF: ", ue.ServingAMF)
-	logger.ContextLog.Infoln("*** Serving amf status AmfUeFindByGuti(): ", ue.ServingAmfChanged)
+	if ue != nil {
+		logger.ContextLog.Infoln("*** AMF IP: ", ue.AmfInstanceIp)
+		logger.ContextLog.Infoln("*** AMF Name: ", ue.AmfInstanceName)
+		logger.ContextLog.Infoln("*** Serving AMF: ", ue.ServingAMF)
+		logger.ContextLog.Infoln("*** Serving amf status AmfUeFindByGuti(): ", ue.ServingAmfChanged)
+	} else {
+		logger.ContextLog.Infoln("*** ue nil ")
+	}
 
 	if ok {
 		logger.ContextLog.Infoln("Guti found locally : ", guti)
