@@ -97,7 +97,7 @@ func HandleNAS(ue *context.RanUe, procedureCode int64, nasPdu []byte) {
 
 	msg, err := nas_security.Decode(ue.AmfUe, ue.Ran.AnType, nasPdu)
 
-	logger.NasLog.Info("*** NAS handler msg: ", msg)
+	// logger.NasLog.Info("*** NAS handler msg: ", msg)
 
 	if err != nil {
 		ue.AmfUe.NASLog.Errorln(err)

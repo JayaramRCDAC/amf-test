@@ -4369,6 +4369,7 @@ func HandleUERadioCapabilityInfoIndication(ran *context.AmfRan, message *ngapTyp
 		}
 	}
 
+	ran.Log.Info("UE Radio Capability Info Indication Complete")
 	// TS 38.413 8.14.1.2/TS 23.502 4.2.8a step5/TS 23.501, clause 5.4.4.1.
 	// send its most up to date UE Radio Capability information to the RAN in the N2 REQUEST message.
 }
