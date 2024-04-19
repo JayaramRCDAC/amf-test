@@ -736,7 +736,7 @@ func HandleUplinkNasTransport(ran *context.AmfRan, message *ngapType.NGAPPDU) {
 		ranUe.UpdateLocation(userLocationInformation)
 	}
 
-	ranUe.Log.Info("*** Uplink NAS Transport nASPDU.Value: ", nASPDU.Value)
+	logger.NgapLog.Info("*** Uplink NAS Transport nASPDU.Value: ", nASPDU.Value)
 	nas.HandleNAS(ranUe, ngapType.ProcedureCodeUplinkNASTransport, nASPDU.Value)
 }
 
