@@ -8,7 +8,6 @@ package nas
 import (
 	"errors"
 	"fmt"
-	"reflect"
 
 	"github.com/omec-project/amf/context"
 	"github.com/omec-project/amf/gmm"
@@ -34,20 +33,6 @@ func Dispatch(ue *context.AmfUe, accessType models.AccessType, procedureCode int
 	logger.ContextLog.Info("*** NAS dispatch state: ", ue.State[accessType])
 	logger.ContextLog.Info("*** NAS dispatch gmm.ArgAccessType: ", accessType)
 	logger.ContextLog.Info("*** NAS dispatch gmm.ArgProcedureCode: ", procedureCode)
-
-	if msg.GmmMessage != nil {
-		fmt.Println("*** Printing non-nil values of GmmMessage fields:")
-		// Iterate over the fields of GmmMessage
-		val := reflect.ValueOf(msg.GmmMessage).Elem()
-		for i := 0; i < val.NumField(); i++ {
-			field := val.Field(i)
-			fieldName := val.Type().Field(i).Name
-			// Check if the field is non-nil
-			if !field.IsNil() {
-				fmt.Printf("%s: %s\n", fieldName, field.Interface())
-			}
-		}
-	}
 
 	return gmm.GmmFSM.SendEvent(ue.State[accessType], gmm.GmmMessageEvent, fsm.ArgsType{
 		gmm.ArgAmfUe:         ue,
