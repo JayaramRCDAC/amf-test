@@ -1270,38 +1270,39 @@ func RequestedNssaiToModelsTest(nasNssai *nasType.RequestedNSSAI) ([]models.Mapp
 	var requestNssai []models.MappingOfSnssai
 
 	buf := nasNssai.GetSNSSAIValue()
-	logger.ContextLog.Infoln("*** buf RequestedNssaiToModelsTest(): ", buf)
+	logger.GmmLog.Infoln("*** buf RequestedNssaiToModelsTest(): ", buf)
 
 	lengthOfBuf := int(nasNssai.GetLen())
-	logger.ContextLog.Infoln("*** lengthOfBuf RequestedNssaiToModelsTest(): ", lengthOfBuf)
+	logger.GmmLog.Infoln("*** lengthOfBuf RequestedNssaiToModelsTest(): ", lengthOfBuf)
 
 	offset := 0
 	for offset < lengthOfBuf {
 		lengthOfSnssaiContents := buf[offset]
-		logger.ContextLog.Infoln("*** lengthOfSnssaiContents RequestedNssaiToModelsTest(): ", lengthOfSnssaiContents)
+		logger.GmmLog.Infoln("*** lengthOfSnssaiContents RequestedNssaiToModelsTest(): ", lengthOfSnssaiContents)
 
 		if snssai, err := snssaiToModels(lengthOfSnssaiContents, buf[offset:]); err != nil {
-			logger.ContextLog.Infoln("*** err!!!! RequestedNssaiToModelsTest(): ")
+			logger.GmmLog.Infoln("*** err!!!! RequestedNssaiToModelsTest(): ")
 			return nil, err
 		} else {
-			logger.ContextLog.Infoln("*** snssai RequestedNssaiToModelsTest(): ", snssai)
+			logger.GmmLog.Infoln("*** snssai RequestedNssaiToModelsTest(): ", snssai)
 
 			requestNssai = append(requestNssai, snssai)
 
-			logger.ContextLog.Infoln("*** requestNssai append RequestedNssaiToModelsTest(): ", requestNssai)
+			logger.GmmLog.Infoln("*** requestNssai append RequestedNssaiToModelsTest(): ", requestNssai)
 			// lengthOfSnssaiContents is 1 byte
 			offset += int(lengthOfSnssaiContents + 1)
-			logger.ContextLog.Infoln("*** offset append RequestedNssaiToModelsTest(): ", offset)
+			logger.GmmLog.Infoln("*** offset append RequestedNssaiToModelsTest(): ", offset)
 		}
 	}
 
-	logger.ContextLog.Infoln("*** requestNssai RequestedNssaiToModelsTest(): ", requestNssai)
+	logger.GmmLog.Infoln("*** requestNssai RequestedNssaiToModelsTest(): ", requestNssai)
 	return requestNssai, nil
 }
 
 // TS 23.502 4.2.2.2.3 Registration with AMF Re-allocation
 func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 	amfSelf := context.AMF_Self()
+
 	if ue.RegistrationRequest.RequestedNSSAI != nil {
 		ue.GmmLog.Infof("*** RequestedNssai before nas convert: %+v", ue.RegistrationRequest.RequestedNSSAI)
 
@@ -1338,7 +1339,8 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 				}
 				ue.AllowedNssai[anType] = append(ue.AllowedNssai[anType], allowedSnssai)
 			} else {
-				needSliceSelection = true
+				// needSliceSelection = true
+				needSliceSelection = false
 				break
 			}
 		}
