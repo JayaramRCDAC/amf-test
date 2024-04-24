@@ -1416,6 +1416,13 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 
 			err = consumer.SearchAmfCommunicationInstance(ue, amfSelf.NrfUri,
 				models.NfType_AMF, models.NfType_AMF, &searchTargetAmfQueryParam)
+
+			if ue.RanUe[anType] == nil {
+				logger.GmmLog.Info("*** handleRequestedNssai() ue.RanUe[anType] is nil")
+			} else {
+				logger.GmmLog.Info("*** handleRequestedNssai() ue.RanUe[anType].RanUeNgapId: ", ue.RanUe[anType].RanUeNgapId)
+			}
+
 			if err == nil {
 				// Condition (A) Step 7: initial AMF find Target AMF via NRF ->
 				// Send Namf_Communication_N1MessageNotify to Target AMF

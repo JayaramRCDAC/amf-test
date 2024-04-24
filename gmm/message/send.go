@@ -284,20 +284,28 @@ func SendRegistrationAccept(
 	}
 
 	if context.AMF_Self().T3550Cfg.Enable {
+		logger.GmmLog.Info("*** SendRegistrationAccept() context.AMF_Self().T3550Cfg.Enable")
 		cfg := context.AMF_Self().T3550Cfg
+		logger.GmmLog.Info("*** SendRegistrationAccept() cfg: ", cfg)
 		ue.T3550 = context.NewTimer(cfg.ExpireTime, cfg.MaxRetryTimes, func(expireTimes int32) {
+			logger.GmmLog.Info("*** SendRegistrationAccept() ue.T3550: ", ue.T3550)
 			if ue.RanUe[anType] == nil {
+				logger.GmmLog.Info("*** SendRegistrationAccept() anType == nil")
 				ue.GmmLog.Warnf("[NAS] UE Context released, abort retransmission of Registration Accept")
 				ue.T3550 = nil
 			} else {
+				logger.GmmLog.Info("*** SendRegistrationAccept() anType != nil")
 				if ue.RanUe[anType].UeContextRequest && !ue.RanUe[anType].RecvdInitialContextSetupResponse {
+					logger.GmmLog.Info("*** SendRegistrationAccept() SendInitialContextSetupRequest")
 					ngap_message.SendInitialContextSetupRequest(ue, anType, nasMsg, pduSessionResourceSetupList, nil, nil, nil)
 				} else {
+					logger.GmmLog.Info("*** SendRegistrationAccept() SendDownlinkNasTransport")
 					ue.GmmLog.Warnf("T3550 expires, retransmit Registration Accept (retry: %d)", expireTimes)
 					ngap_message.SendDownlinkNasTransport(ue.RanUe[anType], nasMsg, nil)
 				}
 			}
 		}, func() {
+			logger.GmmLog.Info("*** SendRegistrationAccept() T3550 Expires")
 			ue.GmmLog.Warnf("T3550 Expires %d times, abort retransmission of Registration Accept", cfg.MaxRetryTimes)
 			ue.T3550 = nil // clear the timer
 			// TS 24.501 5.5.1.2.8 case c, 5.5.1.3.8 case c
