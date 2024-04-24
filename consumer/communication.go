@@ -260,6 +260,7 @@ func RegistrationStatusUpdate(ue *amf_context.AmfUe, request models.UeRegStatusU
 
 	logger.ConsumerLog.Info("*** 5g-guti RegistrationStatusUpdate(): ", ue.Guti)
 	logger.ConsumerLog.Info("*** Serving amf status RegistrationStatusUpdate(): ", ue.ServingAmfChanged)
+	logger.ConsumerLog.Info("*** Serving ue.TargetAmfUri RegistrationStatusUpdate(): ", ue.TargetAmfUri)
 
 	res, httpResp, localErr := client.IndividualUeContextDocumentApi.RegistrationStatusUpdate(ctx, ueContextId, request)
 	logger.ConsumerLog.Info("*** RegStatusTransferComplete status RegistrationStatusUpdate(): ", res.RegStatusTransferComplete)
