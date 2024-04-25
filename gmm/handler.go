@@ -1372,6 +1372,10 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 			}
 
 			ue.GmmLog.Info("*** ue.NetworkSliceInfo: ", ue.NetworkSliceInfo)
+			ue.GmmLog.Info("*** ue.NetworkSliceInfo.AllowedNssaiList: ", ue.NetworkSliceInfo.AllowedNssaiList)
+			ue.GmmLog.Info("*** ue.NetworkSliceInfo.ConfiguredNssai: ", ue.NetworkSliceInfo.ConfiguredNssai)
+			ue.GmmLog.Info("*** ue.NetworkSliceInfo.TargetAmfSet: ", ue.NetworkSliceInfo.TargetAmfSet)
+			ue.GmmLog.Info("*** ue.NetworkSliceInfo.CandidateAmfList: ", ue.NetworkSliceInfo.CandidateAmfList)
 			ue.GmmLog.Info("*** ue.AllowedNssai: ", ue.AllowedNssai)
 			ue.GmmLog.Info("*** ue.ConfiguredNssai: ", ue.ConfiguredNssai)
 
@@ -1385,6 +1389,8 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 			} else if err != nil {
 				ue.GmmLog.Errorf("Registration Status Update Error[%+v]", err)
 			}
+
+			ue.GmmLog.Info("*** ue.ServingAmfChanged before reallocation: ", ue.ServingAmfChanged)
 
 			// Step 6
 			searchTargetAmfQueryParam := Nnrf_NFDiscovery.SearchNFInstancesParamOpts{}
@@ -1426,6 +1432,7 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 			if err == nil {
 				// Condition (A) Step 7: initial AMF find Target AMF via NRF ->
 				// Send Namf_Communication_N1MessageNotify to Target AMF
+				ue.GmmLog.Info("*** initial AMF find Target AMF via NRF -> Send Namf_Communication_N1MessageNotify to Target AMF")
 				ueContext := consumer.BuildUeContextModel(ue)
 				registerContext := models.RegistrationContextContainer{
 					UeContext:        &ueContext,
@@ -1452,7 +1459,9 @@ func handleRequestedNssai(ue *context.AmfUe, anType models.AccessType) error {
 				var n1Message bytes.Buffer
 				ue.RegistrationRequest.EncodeRegistrationRequest(&n1Message)
 				callback.SendN1MessageNotifyAtAMFReAllocation(ue, n1Message.Bytes(), &registerContext)
+				ue.GmmLog.Info("*** ue.ServingAmfChanged after reallocation: ", ue.ServingAmfChanged)
 			} else {
+				ue.GmmLog.Info("*** initial AMF can not find Target AMF via NRF -> Send Reroute NAS Request to RAN")
 				// Condition (B) Step 7: initial AMF can not find Target AMF via NRF -> Send Reroute NAS Request to RAN
 				allowedNssaiNgap := ngapConvert.AllowedNssaiToNgap(ue.AllowedNssai[anType])
 				ngap_message.SendRerouteNasRequest(ue, anType, nil, ue.RanUe[anType].InitialUEMessage, &allowedNssaiNgap)

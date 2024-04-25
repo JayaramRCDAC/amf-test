@@ -251,7 +251,6 @@ func RegistrationStatusUpdate(ue *amf_context.AmfUe, request models.UeRegStatusU
 	configuration.SetBasePath(ue.TargetAmfUri)
 	client := Namf_Communication.NewAPIClient(configuration)
 
-	logger.ConsumerLog.Infof("*** ue.TargetAmfUri value %v", ue.TargetAmfUri)
 	logger.ConsumerLog.Infof("*** Configuration value %v", configuration)
 
 	ctx, cancel := context.WithTimeout(context.TODO(), 30*time.Second)
