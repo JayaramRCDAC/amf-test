@@ -1847,6 +1847,9 @@ func HandleServiceRequest(ue *context.AmfUe, anType models.AccessType,
 	// Send Authtication / Security Procedure not support
 	// Rejecting ServiceRequest if it is received in Deregistered State
 	if !ue.SecurityContextIsValid() || ue.State[anType].Current() == context.Deregistered {
+		logger.GmmLog.Info("*** UE security context validity: ", ue.SecurityContextIsValid())
+		logger.GmmLog.Info("*** UE state: ", ue.State[anType].Current())
+
 		ue.GmmLog.Warnf("No Security Context : SUPI[%s]", ue.Supi)
 		gmm_message.SendServiceReject(ue.RanUe[anType], nil, nasMessage.Cause5GMMUEIdentityCannotBeDerivedByTheNetwork)
 		ngap_message.SendUEContextReleaseCommand(ue.RanUe[anType],
@@ -2404,6 +2407,7 @@ func HandleRegistrationComplete(ue *context.AmfUe, accessType models.AccessType,
 
 	if ue.RegistrationRequest.UplinkDataStatus == nil &&
 		ue.RegistrationRequest.GetFOR() == nasMessage.FollowOnRequestNoPending {
+		logger.GmmLog.Info("*** ue.RegistrationRequest.UplinkDataStatus is nil & ue.RegistrationRequest.GetFOR() == nasMessage.FollowOnRequestNoPending")
 		ngap_message.SendUEContextReleaseCommand(ue.RanUe[accessType], context.UeContextN2NormalRelease,
 			ngapType.CausePresentNas, ngapType.CauseNasPresentNormalRelease)
 	}

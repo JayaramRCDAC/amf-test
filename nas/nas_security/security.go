@@ -119,6 +119,7 @@ func FetchUeContextWithMobileIdentity(payload []byte) *context.AmfUe {
 	msg := new(nas.Message)
 	msg.SecurityHeaderType = nas.GetSecurityHeaderType(payload) & 0x0f
 	logger.CommLog.Debugf("securityHeaderType is %v", msg.SecurityHeaderType)
+	logger.CommLog.Infof("securityHeaderType is %v", msg.SecurityHeaderType)
 	switch msg.SecurityHeaderType {
 	case nas.SecurityHeaderTypeIntegrityProtected:
 		logger.CommLog.Infof("Security header type: Integrity Protected")
@@ -199,6 +200,7 @@ func Decode(ue *context.AmfUe, accessType models.AccessType, payload []byte) (*n
 	msg := new(nas.Message)
 	msg.SecurityHeaderType = nas.GetSecurityHeaderType(payload) & 0x0f
 	ue.NASLog.Traceln("securityHeaderType is ", msg.SecurityHeaderType)
+	ue.NASLog.Infoln("*** securityHeaderType is ", msg.SecurityHeaderType)
 	if msg.SecurityHeaderType == nas.SecurityHeaderTypePlainNas {
 		// RRCEstablishmentCause 0 is for emergency service
 		if ue.SecurityContextAvailable && ue.RanUe[accessType].RRCEstablishmentCause != "0" {
@@ -243,8 +245,10 @@ func Decode(ue *context.AmfUe, accessType models.AccessType, payload []byte) (*n
 	} else { // Security protected NAS message
 		securityHeader := payload[0:6]
 		ue.NASLog.Traceln("securityHeader is ", securityHeader)
+		ue.NASLog.Infoln("*** securityHeader is ", securityHeader)
 		sequenceNumber := payload[6]
 		ue.NASLog.Traceln("sequenceNumber", sequenceNumber)
+		ue.NASLog.Infoln("*** sequenceNumber", sequenceNumber)
 
 		receivedMac32 := securityHeader[2:]
 		// remove security Header except for sequece Number
@@ -273,7 +277,9 @@ func Decode(ue *context.AmfUe, accessType models.AccessType, payload []byte) (*n
 		ue.ULCount.SetSQN(sequenceNumber)
 
 		ue.NASLog.Debugf("Calculate NAS MAC (algorithm: %+v, ULCount: 0x%0x)", ue.IntegrityAlg, ue.ULCount.Get())
+		ue.NASLog.Infof("*** Calculate NAS MAC (algorithm: %+v, ULCount: 0x%0x)", ue.IntegrityAlg, ue.ULCount.Get())
 		ue.NASLog.Debugf("NAS integrity key0x: %0x", ue.KnasInt)
+		ue.NASLog.Infof("*** NAS integrity key0x: %0x", ue.KnasInt)
 		mutex.Lock()
 		defer mutex.Unlock()
 		mac32, err := security.NASMacCalculate(ue.IntegrityAlg, ue.KnasInt, ue.ULCount.Get(), security.Bearer3GPP,
@@ -282,7 +288,7 @@ func Decode(ue *context.AmfUe, accessType models.AccessType, payload []byte) (*n
 			return nil, fmt.Errorf("MAC calcuate error: %+v", err)
 		}
 
-		ue.NASLog.Infof("NAS MAC verification failed(received: 0x%08x, expected: 0x%08x)", receivedMac32, mac32)
+		ue.NASLog.Infof("*** NAS MAC verification (received: 0x%08x, expected: 0x%08x)", receivedMac32, mac32)
 		if !reflect.DeepEqual(mac32, receivedMac32) {
 			ue.NASLog.Warnf("NAS MAC verification failed(received: 0x%08x, expected: 0x%08x)", receivedMac32, mac32)
 			ue.MacFailed = true
