@@ -2407,9 +2407,9 @@ func HandleRegistrationComplete(ue *context.AmfUe, accessType models.AccessType,
 
 	if ue.RegistrationRequest.UplinkDataStatus == nil &&
 		ue.RegistrationRequest.GetFOR() == nasMessage.FollowOnRequestNoPending {
-		logger.GmmLog.Info("*** ue.RegistrationRequest.UplinkDataStatus is nil & ue.RegistrationRequest.GetFOR() == nasMessage.FollowOnRequestNoPending")
-		ngap_message.SendUEContextReleaseCommand(ue.RanUe[accessType], context.UeContextN2NormalRelease,
-			ngapType.CausePresentNas, ngapType.CauseNasPresentNormalRelease)
+		logger.GmmLog.Info("Got no follow-on request pending in registration request - Suppressing UE Context Release")
+		// ngap_message.SendUEContextReleaseCommand(ue.RanUe[accessType], context.UeContextN2NormalRelease,
+		//	ngapType.CausePresentNas, ngapType.CauseNasPresentNormalRelease)
 	}
 
 	return GmmFSM.SendEvent(ue.State[accessType], ContextSetupSuccessEvent, fsm.ArgsType{
